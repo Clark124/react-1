@@ -15,5 +15,5 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "homepage": "https://clark124.github.io/react-1"
+  "homepage": "https://clark124.github.io/react-1/build"
 }
