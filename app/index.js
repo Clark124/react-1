@@ -7,7 +7,7 @@ var element = $('<div></div>');
 
   /* lodash is required for the next line to work */
 //   element.innerHTML = _.join(['Hello','webpack'], ' ');
-element.html(_.join(['Hello','webpack'], ' '))
+element.html(_.join(['Hi','webpack-clark'], ' '))
 
 //   return element;
 return element.get(0);
