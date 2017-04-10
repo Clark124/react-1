@@ -29,10 +29,10 @@ import './index.css';
 //   document.getElementById('root')
 // )
 
-import Welcome from './Welcome'
+// import Welcome from './Welcome'
 
 ReactDOM.render(
-  <Welcome name="Clark"/>,
+  <App/>,
   document.getElementById('root')
 )
   
