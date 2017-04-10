@@ -9,7 +9,7 @@
 *::before{
     box-sizing: border-box;
 }
-ul,ol,dl{
+ul,dl{
     list-style:none;
 }
 a{
