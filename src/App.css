@@ -1,4 +1,4 @@
-.App {
+.todo {
   color: #333;
   border: 1px solid #aaa;
   border-radius: 4px;
@@ -10,11 +10,16 @@
   box-shadow: 0 0 1em hsla(0,0%,0%,0.15);
 }
 
-.App>.todoList>li:nth-child(odd){
+.todo>.todoList>li:nth-child(odd){
   background: #eee;
 }
-.App>.todoList>li:nth-child(even){
+.todo>.todoList>li:nth-child(even){
   background: transparent;
+}
+.todo>h1>button{
+  padding: 3px 5px;
+  float: right;
+  border-right: 3px;
 }
 
 /*.App-logo {
