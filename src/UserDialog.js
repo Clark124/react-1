@@ -13,6 +13,7 @@ export default class UserDialog extends Component{
             }
         }
     }
+    
     switch(e){
         this.setState({
             selected: e.target.value

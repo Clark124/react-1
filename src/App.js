@@ -14,14 +14,15 @@ class App extends Component {
   constructor(props){
     super(props)
     this.state={
-      user:{},
+      user: getCurrentUser() || {} ,
       newTodo: '',
-      todoList: [],
-      currentUser:null 
+      todoList: [], 
     }
   }
   
-  
+  componentWillMount(){
+    this.fetchTodos()
+  }
   render() {
     
     let todos = this.state.todoList
@@ -60,7 +61,7 @@ class App extends Component {
   }
 
   fetchTodos(){
-    if(this.state.currentUser){
+    if(this.state.user){
     var query = new AV.Query('AllTodos');
     query.find()
       .then((todos)=>{
@@ -75,7 +76,7 @@ class App extends Component {
       })
     }
   }
-
+ //更新数据
   updataTodos(){
       let dataString = JSON.stringify(this.state.todoList)
       let avTodos = AV.Object.createWithoutData('AllTodos',this.state.todoList.id)
@@ -85,6 +86,7 @@ class App extends Component {
       })
     }
 
+  //保存数据
   saveTodos(){
     let dataString = JSON.stringify(this.state.todoList)
     var  AVTodos = AV.Object.extend('AllTodos');
@@ -95,6 +97,7 @@ class App extends Component {
     avTodos.set('content',dataString);
     avTodos.setACL(acl)//设置访问控制
     avTodos.save().then((todo)=>{
+      console.log(todo);
       let stateCopy = JSON.parse(JSON.stringify(this.state))
       stateCopy.todoList.id = todo.id //一定记得要把id挂到this.todoList上，否测下次就会调用updateTodos了
       this.setState(stateCopy)
@@ -116,20 +119,18 @@ class App extends Component {
     signOut()
     let stateCopy = JSON.parse(JSON.stringify(this.state))
     stateCopy.user={}
+
     this.setState(stateCopy)
   }
  
   onSignUpOrOnSignIn(user){
     let stateCopy = JSON.parse(JSON.stringify(this.state)) 
-    stateCopy.user = user
-    stateCopy.currentUser = getCurrentUser();
+    stateCopy.user = user;
     this.setState(stateCopy)
     this.fetchTodos()
     
   }
   componentDidUpdate(){
-    // this.state.currentUser = getCurrentUser()
-    // this.setState(this.state)
     // this.fetchTodos()
   }
   delete(event,todo){
