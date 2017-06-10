@@ -50,7 +50,7 @@ class App extends Component {
     )
     return (
       <div className="App">
-        {this.state.user.id?todo:null}
+        {todo}
         {this.state.user.id?
           null:
           <UserDialog 

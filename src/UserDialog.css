@@ -7,7 +7,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    /*background: hsla(0,0%,0%,0.4);*/
+    background: hsla(0,0%,0%,0.4);
 }
 .UserDialog{
     border:1px solid #aaa;
