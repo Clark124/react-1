@@ -1,0 +1,45 @@
+.UserDialog-Wrapper{
+    position:fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: hsla(0,0%,0%,0.4);
+}
+.UserDialog{
+    font-size: 16px;
+    border:1px solid #aaa;
+    border-radius: 4px;
+    min-width: 23em;
+    min-height: 34em;
+    padding: 30px 15px;
+    background: url('../assets/img/dialog-bg.jpg');
+    background-size: cover;
+    box-shadow: 0 0 1em hsla(0,0%,0%,0.35);
+}
+.UserDialog .form-group {
+    margin-bottom: 2em;
+}
+.UserDialog button.btn.btn-primary {
+    padding: 0.3em 0.5em;
+}
+
+.UserDialog .forgotPsd{
+    line-height: 2.5em;
+}
+.UserDialog .signInOrSignUp {margin-top: 1em;}
+.UserDialog .signInOrSignUp > nav:first-child{padding: 1em; margin-left: -2em;}
+.UserDialog .signInOrSignUp > nav:first-child label{ margin-left: 2em; cursor: pointer;}
+.UserDialog .signInOrSignUp > .panes { padding: 2em 1em; }
+.UserDialog .forgotPassword {margin-top: 5em; }
+.UserDialog .forgotPassword > h4 { padding: 1em; font-weight: bold; }
+.UserDialog .forgotPassword form { padding: 0 1em 1em; }
+.UserDialog .forgotPassword button {padding: 8px 2px; }
+.UserDialog .forgotPassword .returnSignUp {display: block; height: 38px; line-height: 38px; font-size: 16px;}
+.UserDialog form>.row{ display: flex; padding: .3em 0; }
+.UserDialog form>.row>label:first-child{ width: 4em; }
+
+.UserDialog button{font: inherit; padding: .2em;}

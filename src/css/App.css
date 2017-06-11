@@ -1,0 +1,19 @@
+
+.panel{
+  width: 30em;
+}
+.panel .panel-title{
+  height: 30px;
+  line-height: 30px;
+}
+.panel .panel-title:after{
+  content: "";
+  display: block;
+  clear: both;
+}
+.panel .panel-title .btn{
+  float: right;
+}
+.panel .panel-body .list-group{
+  margin-top: 20px;
+}

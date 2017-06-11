@@ -1,177 +1,158 @@
 import React, { Component } from 'react';
-import './App.css';
-import TodoInput from './TodoInput';
-import TodoItem from './TodoItem';
+import './css/App.css';
+import TodoInput from './components/TodoInput';
+import TodoItem from './components/TodoItem';
 import 'normalize.css';
-import './reset.css';
-import UserDialog from './UserDialog'
-import {getCurrentUser,signOut} from './leancloud'
-import AV from './leancloud'
-
+import './css/reset.css';
+import './lib/bootstrap/css/bootstrap.min.css'
+import { Panel, Button, ListGroupItem, ListGroup } from 'react-bootstrap'
+import UserDialog from './components/UserDialog'
+import { getCurrentUser, signOut, TodoModel } from './js/leancloud'
 
 
 class App extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
-    this.state={
-      user: getCurrentUser() || {} ,
+    this.state = {
+      user: getCurrentUser() || {},
       newTodo: '',
-      todoList: [], 
+      todoList: [],
     }
-  }
-  
-  componentWillMount(){
-    this.fetchTodos()
-  }
-  render() {
-    
-    let todos = this.state.todoList
-      .filter((item) => !item.deleted)
-      .map((item,index)=>{
-      return (
-              <li key={index}>
-                <TodoItem todo={item} onToggle={this.toggle.bind(this)} onDelete={this.delete.bind(this)} />
-              </li>
-            )
-    })
-    let todo = (
-      <div className="todo">
-        <h1>{this.state.user.username||"我"}的待办
-          {this.state.user.id?<button onClick={this.signOut.bind(this)}>登出</button>:null}
-        </h1>
-        <div className="inputWrapper">
-          <TodoInput content={this.state.newTodo} onChange={this.changeTitle.bind(this)} onSubmit={this.addTodo.bind(this)}/>
-        </div>
-        <ul className="todoList">
-          {todos}
-        </ul>
-      </div>
-      
-    )
-    return (
-      <div className="App">
-        {todo}
-        {this.state.user.id?
-          null:
-          <UserDialog 
-          onSignUp={this.onSignUpOrOnSignIn.bind(this)}
-          onSignIn={this.onSignUpOrOnSignIn.bind(this)}/>}    
-      </div>
-    )
-  }
-
-  fetchTodos(){
-    if(this.state.user){
-    var query = new AV.Query('AllTodos');
-    query.find()
-      .then((todos)=>{
-        let avAlltodos = todos[0]//因为理论上AllTodos只有一个，所有我们取结果的第一项
-        let id = avAlltodos.id
+    let user = getCurrentUser()
+    if (user) {
+      TodoModel.getByUser(user, (todos) => {
         let stateCopy = JSON.parse(JSON.stringify(this.state))
-        stateCopy.todoList = JSON.parse(avAlltodos.attributes.content)//为什么有个attributes？因为从控制台看到的
-        stateCopy.todoList.id = id //为什么给todoList这个数组设置id？因为数组也是对象
+        stateCopy.todoList = todos
         this.setState(stateCopy)
-      },function(error){
-        console.error(error)
       })
     }
   }
- //更新数据
-  updataTodos(){
-      let dataString = JSON.stringify(this.state.todoList)
-      let avTodos = AV.Object.createWithoutData('AllTodos',this.state.todoList.id)
-      avTodos.set('content',dataString)
-      avTodos.save().then(()=>{
-        console.log('更新成功')
-      })
-    }
 
-  //保存数据
-  saveTodos(){
-    let dataString = JSON.stringify(this.state.todoList)
-    var  AVTodos = AV.Object.extend('AllTodos');
-    var avTodos = new AVTodos();
-    var acl = new AV.ACL();
-    acl.setReadAccess(AV.User.current(),true)//只有这个user能读
-    acl.setWriteAccess(AV.User.current(),true)//只有这个user能写
-    avTodos.set('content',dataString);
-    avTodos.setACL(acl)//设置访问控制
-    avTodos.save().then((todo)=>{
-      console.log(todo);
-      let stateCopy = JSON.parse(JSON.stringify(this.state))
-      stateCopy.todoList.id = todo.id //一定记得要把id挂到this.todoList上，否测下次就会调用updateTodos了
-      this.setState(stateCopy)
-      console.log('保存成功');
-    },function(error){
-      alert('保存失败')
-    })
-  }
-
-  saveOrUpdateTodos(){
-    if(this.state.todoList.id){
-      this.updataTodos()
-    }else{
-      this.saveTodos()
-    }
-  }
-
-  signOut(){
-    signOut()
-    let stateCopy = JSON.parse(JSON.stringify(this.state))
-    stateCopy.user={}
-
-    this.setState(stateCopy)
-  }
- 
-  onSignUpOrOnSignIn(user){
-    let stateCopy = JSON.parse(JSON.stringify(this.state)) 
-    stateCopy.user = user;
-    this.setState(stateCopy)
-    this.fetchTodos()
-    
-  }
-  componentDidUpdate(){
+  componentWillMount() {
     // this.fetchTodos()
   }
-  delete(event,todo){
-    todo.deleted = true
-    this.setState(this.state)
-    this.saveOrUpdateTodos()
+  render() {
+    let todos = this.state.todoList
+      .filter((item) => !item.deleted)
+      .map((item, index) => {
+        return (
+          <ListGroupItem key={index}>
+            <TodoItem todo={item} onToggle={this.toggle.bind(this)}
+              onDelete={this.delete.bind(this)} />
+          </ListGroupItem>
+        )
+      })
+    let title = (
+      <h1>{this.state.user.username || "我"}的待办
+          {this.state.user.id ? <Button bsStyle="success" bsSize="small" onClick={this.signOut.bind(this)}>登出</Button> : null}
+      </h1>
+    )
+    let panelsInstance = (
+      <div className="panel">
+        <Panel header={title} bsStyle="success">
+          <div className="inputWrapper">
+            <TodoInput content={this.state.newTodo}
+              onChange={this.changeTitle.bind(this)}
+              onSubmit={this.addTodo.bind(this)} />
+          </div>
+          <ListGroup>
+            {todos}
+          </ListGroup>
+        </Panel>
+      </div>
+    );
+
+    return (
+      <div className="App">
+        {this.state.user.id ?
+          panelsInstance :
+          <UserDialog
+            onSignUp={this.onSignUpOrOnSignIn.bind(this)}
+            onSignIn={this.onSignUpOrOnSignIn.bind(this)} />}
+      </div>
+    )
   }
 
-  toggle(e,todo){
-    todo.status = todo.status === 'completed'?'':'completed'
-    this.setState(this.state)
-    this.saveOrUpdateTodos()
+  signOut() {
+    signOut()
+    let stateCopy = JSON.parse(JSON.stringify(this.state))
+    stateCopy.user = {}
+    this.setState(stateCopy)
   }
-  changeTitle(e){
+
+  onSignUpOrOnSignIn(user) {
+    let stateCopy = JSON.parse(JSON.stringify(this.state))
+    stateCopy.user = user;
+    this.setState(stateCopy)
+  }
+
+  componentDidUpdate() {
+    // this.fetchTodos()
+  }
+
+  delete(event, todo) {
+    TodoModel.destroy(todo.id, () => {
+      todo.deleted = true
+      this.setState(this.state)
+    })
+  }
+
+  toggle(e, todo) {
+    let oldStatus = todo.status
+    todo.status = todo.status === 'completed' ? '' : 'completed'
+
+    TodoModel.update(todo, () => {
+      this.setState(this.state)
+    }, (error) => {
+      todo.status = oldStatus
+      this.setState(this.state)
+    })
+  }
+
+  changeTitle(e) {
     this.setState({
-      newTodo:e.target.value,
+      newTodo: e.target.value,
       todoList: this.state.todoList
     })
 
   }
 
-  addTodo(event){
-    this.state.todoList.push({
-      id: idMaker(),
+  addTodo(event) {
+    let newTodo = {
       title: event.target.value,
-      status: null,
-      deleted: false
+      status: '',
+      deleted: false,
+      currentTime:new Date().getTime()
+    }
+    TodoModel.create(newTodo, (res) => {
+      newTodo.id = res.id
+      this.state.todoList.push(newTodo)
+      this.setState({
+        newTodo: '',
+        todoList: this.state.todoList
+      })
+    }, (error) => {
+      console.log(error)
     })
-    this.setState({
-      newTodo:"",
-      todoList: this.state.todoList
-    })
-    this.saveOrUpdateTodos()
   }
+
+  // friendlyDate(time) {
+  //   var now = new Date().getTime();
+  //   var result = (now - time) / 1000;
+  //   if (result < 60) {
+  //     return "刚刚"
+  //   } else if (result < 3600 && result > 60) {
+  //     return parseInt((result / 60), 10) + "分钟前"
+  //   } else if (result > 3600 && result < (3600 * 24)) {
+  //     return parseInt((result / 3600), 10) + "小时前"
+  //   } else if (result > (3600 * 24) && result < (3600 * 24 * 30)) {
+  //     return parseInt((result / 3600 / 24), 10) + "天前"
+  //   } else if (result > (3600 * 24 * 30) && result < (3600 * 24 * 30 * 12)) {
+  //     return parseInt((result / 3600 / 24 / 30), 10) + "个月前"
+  //   } else {
+  //     return parseInt((result / 3600 / 24 / 30 / 12), 10) + "年前"
+  //   }
+  // }
 }
 
 export default App;
-
-let id = 0;
-
-function idMaker(){
-  id +=1
-  return id
-}
