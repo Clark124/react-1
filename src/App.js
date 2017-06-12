@@ -81,9 +81,12 @@ class App extends Component {
   }
 
   onSignUpOrOnSignIn(user) {
-    let stateCopy = JSON.parse(JSON.stringify(this.state))
-    stateCopy.user = user;
-    this.setState(stateCopy)
+    TodoModel.getByUser(user, (todos) => {
+      let stateCopy = JSON.parse(JSON.stringify(this.state))
+      stateCopy.user = user;
+      stateCopy.todoList = todos
+      this.setState(stateCopy)
+    })
   }
 
   componentDidUpdate() {
@@ -100,7 +103,7 @@ class App extends Component {
   toggle(e, todo) {
     let oldStatus = todo.status
     todo.status = todo.status === 'completed' ? '' : 'completed'
-
+    todo.todoStyle.textDecoration = todo.todoStyle.textDecoration === 'line-through' ? 'none' : 'line-through'
     TodoModel.update(todo, () => {
       this.setState(this.state)
     }, (error) => {
@@ -122,7 +125,8 @@ class App extends Component {
       title: event.target.value,
       status: '',
       deleted: false,
-      currentTime:new Date().getTime()
+      currentTime: new Date().getTime(),
+      todoStyle:{'textDecoration':'none'}
     }
     TodoModel.create(newTodo, (res) => {
       newTodo.id = res.id

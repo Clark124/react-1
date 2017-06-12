@@ -22,13 +22,14 @@ export const TodoModel = {
       errorFn && errorFn.call(null,error)
     })
   },
-  create({ status, title, deleted,currentTime }, successFn, errorFn) {
+  create({ status, title, deleted,currentTime,todoStyle}, successFn, errorFn) {
     let Todo = AV.Object.extend('Todo')
     let todo = new Todo()
     todo.set('title', title)
     todo.set('status', status)
     todo.set('deleted', deleted)
     todo.set('currentTime',currentTime)
+    todo.set('todoStyle',todoStyle)
      // 根据文档 https://leancloud.cn/docs/acl-guide.html#单用户权限设置
      // 这样做就可以让这个 Todo 只被当前用户看到
     let acl = new AV.ACL()
@@ -43,11 +44,12 @@ export const TodoModel = {
       errorFn && error.call(null, error)
     })
   },
-  update({id,title,status,deleted},successFn,errorFn) {
+  update({id,title,status,deleted,todoStyle},successFn,errorFn) {
     let todo = AV.Object.createWithoutData('Todo',id)
     title !== undefined && todo.set('title',title)
     status !== undefined && todo.set('status',status)
     deleted !== undefined && todo.set('deleted',deleted)
+    todoStyle !== undefined && todo.set('todoStyle',todoStyle)
     // 为什么我要像上面那样写代码？
      // 考虑如下场景
      // update({id:1, title:'hi'})

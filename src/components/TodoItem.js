@@ -2,13 +2,19 @@ import React, { Component } from 'react';
 import '../css/TodoItem.css'
 import { Button } from 'react-bootstrap'
 export default class TodoItem extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            
+        }
+    }
     render() {
         // return <div>{this.props.todo.title}</div>
         return (
             <div className="TodoItem">
-                <input type="checkbox" checked={this.props.todo.status === 'completed'}
+                <input type="checkbox" checked={this.props.todo.status === 'completed'} ref="checked"
                     onChange={this.toggle.bind(this)} />
-                <span className="title" ref="todo">{this.props.todo.title}</span>
+                <span className="title" ref="todo" style={{...this.props.todo.todoStyle}}>{this.props.todo.title}</span>
                 <span className="time">{this.friendlyDate(this.props.todo.currentTime)}</span>
                 <Button bsStyle="warning" bsSize="xsmall" onClick={this.delete.bind(this)}>删除</Button>
             </div>
@@ -35,12 +41,6 @@ export default class TodoItem extends Component {
 
 
     toggle(e) {
-        if (!this.refs.todo.style.textDecoration) {
-            this.refs.todo.style.textDecoration = 'line-through'
-        } else {
-            this.refs.todo.style.textDecoration = ''
-        }
-
         this.props.onToggle(e, this.props.todo)
     }
 
