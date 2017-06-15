@@ -14,7 +14,7 @@ body {
 #root{
   position: fixed;
   left:50%;
-  margin-top: 20em;
-  transform: translate(-50%,-50%);
+  margin-top: 5em;
+  transform: translate(-50%);
 }
 
