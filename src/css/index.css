@@ -11,10 +11,5 @@ body {
 #root{
   text-align: center;
 }
-#root{
-  position: fixed;
-  left:50%;
-  margin-top: 5em;
-  transform: translate(-50%);
-}
+
 

@@ -1,9 +1,11 @@
 
 .panel{
-  min-width: 26em;
+  max-width:40em;
+  margin: 5em auto; 
 }
 .panel.panel-success {
     margin-bottom: 0;
+    margin-top: 0;
 }
 .panel .panel-title{
   height: 30px;
